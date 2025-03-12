@@ -174,8 +174,10 @@ def get_prompt_expressiveness(faithfulness_result, lines, shared_prompt):
     json_format = {}
     for key, value in faithfulness_result.items():
         json_format[key] = {
-            "origin": value['origin'],
-            "direct": value['direct'],
+            # "origin": value['origin'],
+            # "direct": value['direct'],
+            "origin": value.get('origin', ''),
+            "direct": value.get('direct', ''),
             "reflection": "reflection on the direct translation version",
             "free": f"retranslated result, aiming for fluency and naturalness, conforming to {TARGET_LANGUAGE} expression habits, DO NOT leave empty line here!"
         }

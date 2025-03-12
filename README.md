@@ -160,3 +160,8 @@ This project is licensed under the Apache 2.0 License. Special thanks to the fol
 ---
 
 <p align="center">If you find VideoLingo helpful, please give me a ⭐️!</p>
+
+
+## 补充
+1. 如果遇到生成数据失败的问题（step2 生成字幕时），尝试清除所有output/log和output/gpt_log数据，重新生成。
+2. ref: https://github.com/HFrost0/bilix，我基于该工具进行bilibili视频的下载，具体使用方法见github说明

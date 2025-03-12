@@ -11,26 +11,33 @@ from demucs.api import Separator
 from demucs.apply import BagOfModels
 import gc
 
+## 原全局变量改造成局部变量，为了其功能公用做准备
 AUDIO_DIR = "output/audio"
 RAW_AUDIO_FILE = os.path.join(AUDIO_DIR, "raw.mp3")
 BACKGROUND_AUDIO_FILE = os.path.join(AUDIO_DIR, "background.mp3")
 VOCAL_AUDIO_FILE = os.path.join(AUDIO_DIR, "vocal.mp3")
 
 class PreloadedSeparator(Separator):
-    def __init__(self, model: BagOfModels, shifts: int = 1, overlap: float = 0.25,
+    # DEFAULT：shifts: int = 1, overlap: float = 0.25
+    def __init__(self, model: BagOfModels, shifts: int = 2, overlap: float = 0.5,
                  split: bool = True, segment: Optional[int] = None, jobs: int = 0):
         self._model, self._audio_channels, self._samplerate = model, model.audio_channels, model.samplerate
         device = "cuda" if is_cuda_available() else "mps" if torch.backends.mps.is_available() else "cpu"
         self.update_parameter(device=device, shifts=shifts, overlap=overlap, split=split,
                             segment=segment, jobs=jobs, progress=True, callback=None, callback_arg=None)
 
-def demucs_main():
+def demucs_main(audio_dir="output/audio"):
+    # 原全局变量改造成局部变量，为了其功能公用做准备
+    RAW_AUDIO_FILE = os.path.join(audio_dir, "raw.mp3")
+    BACKGROUND_AUDIO_FILE = os.path.join(audio_dir, "background.mp3")
+    VOCAL_AUDIO_FILE = os.path.join(audio_dir, "vocal.mp3")
+
     if os.path.exists(VOCAL_AUDIO_FILE) and os.path.exists(BACKGROUND_AUDIO_FILE):
         rprint(f"[yellow]⚠️ {VOCAL_AUDIO_FILE} and {BACKGROUND_AUDIO_FILE} already exist, skip Demucs processing.[/yellow]")
         return
     
     console = Console()
-    os.makedirs(AUDIO_DIR, exist_ok=True)
+    os.makedirs(audio_dir, exist_ok=True)
     
     console.print("🤖 Loading <htdemucs> model...")
     model = get_model('htdemucs')
